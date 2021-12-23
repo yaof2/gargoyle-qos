@@ -1,0 +1,68 @@
+#
+# This is free software, lisence use MIT.
+# 
+# Copyright (C) 2020 KFERMercer <KFER.Mercer@gmail.com>
+# 
+# <https://github.com/KFERMercer/OpenWrt-CI>
+#
+
+name: Update-helloworld
+
+on:
+  #schedule:
+    #- cron: 35 19 * * *
+    # 点击star才会触发    
+  watch:
+      types: [started]
+
+jobs:
+
+  prepare:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        fetch-depth: 0
+        lfs: true
+
+    - name: Set git identity
+      run : |
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        
+    - name: Load latest gargoyle
+      run: |
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/luci-app-qos-gargoyle ./tmp/gargoyle/luci-app-qos-gargoyle
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/gargoyle-firewall-util ./tmp/gargoyle/gargoyle-packages/gargoyle-firewall-util
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/libericstools ./tmp/gargoyle/gargoyle-packages/libericstools
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/libiptbwctl ./tmp/gargoyle/gargoyle-packages/libiptbwctl
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/qos-gargoyle ./tmp/gargoyle/gargoyle-packages/qos-gargoyle
+        
+        
+        cp -rf ./tmp/gargoyle/luci-app-qos-gargoyle ./
+        cp -rf ./tmp/gargoyle/gargoyle-packages/gargoyle-firewall-util ./gargoyle-firewall-util
+        cp -rf ./tmp/gargoyle/gargoyle-packages/libericstools ./libericstools
+        cp -rf ./tmp/gargoyle/gargoyle-packages/libiptbwctl ./libiptbwctl
+        cp -rf ./tmp/gargoyle/gargoyle-packages/qos-gargoyle ./qos-gargoyle
+        
+        
+    - name: Apply commit changes
+      run: |
+         git add ./luci-app-qos-gargoyle
+         git add ./gargoyle-firewall-util
+         git add ./libericstools
+         git add ./libiptbwctl
+         git add ./qos-gargoyle
+        
+         echo -e "[bot] qos-gargoyle: update\n\nlatest commit: $(cat ./tmp/gargoyle/.git/refs/heads/master)" > ./tmp/message
+         git commit --file="./tmp/message" || exit 0
+        
+    - name: Push Commits
+      env:
+        DOWNSTREAM_BRANCH: main
+      run: git push origin $DOWNSTREAM_BRANCH
