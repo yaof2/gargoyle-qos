@@ -59,7 +59,7 @@ jobs:
          git add ./libiptbwctl
          git add ./qos-gargoyle
         
-         echo -e "[bot] qos-gargoyle: update\n\nlatest commit: $(cat ./tmp/gargoyle/.git/refs/heads/master)" > ./tmp/message
+         echo -e "[bot] gargoyle-qos: update\n\nlatest commit: $(cat ./tmp/gargoyle/.git/refs/heads/master)" > ./tmp/message
          git commit --file="./tmp/message" || exit 0
         
     - name: Push Commits
