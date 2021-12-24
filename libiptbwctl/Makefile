@@ -12,27 +12,21 @@ PKG_NAME:=libiptbwctl
 PKG_VERSION:=1.0.0
 PKG_RELEASE:=1
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/libiptbwctl
+PKG_MAINTAINER:=Eric Bishop <eric@gargoyle-router.com>
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libiptbwctl
-	SECTION:=net
-	CATEGORY:=Gargoyle
-	SUBMENU:=Network
-	DEPENDS:=+iptables-mod-bandwidth
-	TITLE:=IPT bandwidth control library
-	URL:=http://www.gargoyle-router.com
-	MAINTAINER:=Eric Bishop <eric@gargoyle-router.com>
+  SECTION:=libs
+  CATEGORY:=Libraries
+  SUBMENU:=Networking
+  DEPENDS:=+iptables-mod-bandwidth
+  TITLE:=IPT bandwidth control library
+  URL:=http://www.gargoyle-router.com
 endef
 
 define Package/libiptbwctl/description
   IPT bandwidth control library
-endef
-
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./src/* $(PKG_BUILD_DIR)/
 endef
 
 define Build/Configure
@@ -62,8 +56,7 @@ define Build/Compile
 endef
 
 define Package/libiptbwctl/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/lib
 	$(CP) $(PKG_BUILD_DIR)/*.so* $(1)/usr/lib/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/bw_get $(1)/usr/bin/bw_get
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/bw_set $(1)/usr/bin/bw_set

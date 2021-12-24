@@ -34,6 +34,8 @@
 #include <errno.h>
 #include <sys/sem.h>
 #include <sys/time.h>
+#include <sys/syscall.h>
+
 #define BANDWIDTH_QUERY_LENGTH		16384
 
 /* socket id parameters (for userspace i/o) */
@@ -60,7 +62,7 @@ typedef struct ip_bw_struct
 {
 	uint32_t ip;
 	uint64_t bw;
-} ip_bw;
+}ip_bw;
 
 /*
 * format of response:
@@ -76,26 +78,26 @@ typedef struct ip_bw_struct
 */
 typedef struct ip_bw_kernel_data_item_struct
 {
-	uint32_t ip;
-	uint32_t num_nodes;
-	uint64_t first_start;
-	uint64_t first_end;
-	uint64_t last_end;
-	uint64_t ipbw_data[0];
+    uint32_t ip;
+    uint32_t num_nodes;
+    uint64_t first_start;
+    uint64_t first_end;
+    uint64_t last_end;
+    uint64_t ipbw_data[0];
 }ip_bw_kernel_data_item;
 
 typedef struct
 {
-	uint8_t error;
-	uint32_t ip_total;
-	uint32_t index_start;
-	uint32_t ip_num;
-	uint64_t reset_interval;
-	uint64_t reset_time;
-	uint8_t reset_is_constant_interval;
-	/*payload for history ip bw data*/
-	ip_bw_kernel_data_item data_item[0];
-} ip_bw_kernel_data;
+    uint8_t error;
+    uint32_t ip_total;
+    uint32_t index_start;
+    uint32_t ip_num;
+    uint64_t reset_interval;
+    uint64_t reset_time;
+    uint8_t reset_is_constant_interval;
+    /*payload for history ip bw data*/
+    ip_bw_kernel_data_item data_item[0];
+}ip_bw_kernel_data;
 
 typedef struct history_struct
 {

@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work 'as-is' we provide.
  * No warranty, express or implied.
  * We've done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -36,6 +36,7 @@
 
 #ifndef ERICS_TOOLS_H
 #define ERICS_TOOLS_H
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,29 +54,34 @@
 	#define stricmp strcasecmp
 #endif
 
+
+
 /* tree_map structs / prototypes */
 typedef struct long_tree_map_node
 {
 	unsigned long key;
 	void* value;
-
-	signed char balance;
+	
+	signed char balance; 
 	struct long_tree_map_node* left;
 	struct long_tree_map_node* right;
 } long_map_node;
 
-typedef struct
+typedef struct 
 {
 	long_map_node* root;
 	unsigned long num_elements;
-} long_map;
+
+}long_map;
 
 typedef struct
 {
 	long_map lm;
 	unsigned char store_keys;
 	unsigned long num_elements;
-} string_map;
+
+}string_map;
+
 
 
 /* long map functions */
@@ -98,11 +104,10 @@ extern string_map* initialize_string_map(unsigned char store_keys);
 extern void* get_string_map_element(string_map* map, const char* key);
 extern void* set_string_map_element(string_map* map, const char* key, void* value);
 extern void* remove_string_map_element(string_map* map, const char* key);
-extern char** get_string_map_keys(string_map* map, unsigned long* num_keys_returned);
+extern char** get_string_map_keys(string_map* map, unsigned long* num_keys_returned); 
 extern void** get_string_map_values(string_map* map, unsigned long* num_values_returned);
 extern void** destroy_string_map(string_map* map, int destruction_type, unsigned long* num_destroyed);
 extern void apply_to_every_string_map_value(string_map* map, void (*apply_func)(char* key, void* value));
-
 /*
  * three different ways to deal with values when data structure is destroyed
  */
@@ -110,8 +115,9 @@ extern void apply_to_every_string_map_value(string_map* map, void (*apply_func)(
 #define DESTROY_MODE_FREE_VALUES 	21
 #define DESTROY_MODE_IGNORE_VALUES	22
 
-/*
- * for convenience & backwards compatibility alias _string_map_ functions to
+
+/* 
+ * for convenience & backwards compatibility alias _string_map_ functions to 
  *  _map_ functions since string map is used more often than long map
  */
 #define initialize_map		initialize_string_map
@@ -121,6 +127,8 @@ extern void apply_to_every_string_map_value(string_map* map, void (*apply_func)(
 #define get_map_keys		get_string_map_keys
 #define get_map_values		get_string_map_values
 #define destroy_map		destroy_string_map
+
+
 
 /* list structs / prototypes */
 
@@ -136,14 +144,19 @@ typedef struct list_struct
 	long length;
 	list_node* head;
 	list_node* tail;
-
-} list;
+	
+}list;
 
 extern list* initialize_list(void);			/* O(1) */
+
+
+
 extern void* shift_list(list* l);			/* O(1) */
 extern void  unshift_list(list* l, void* value);	/* O(1) */
 extern void* pop_list(list* l);				/* O(1) */
 extern void  push_list(list*l, void* value);		/* O(1) */
+
+
 extern void**  destroy_list(list* l, int destruction_type, unsigned long* num_destroyed);	/* O(n) */
 extern void* list_element_at(list* l, unsigned long index);					/* O(n) */
 extern void** get_list_values(list* l, unsigned long* num_values_returned);			/* O(n) */
@@ -161,12 +174,18 @@ extern void** get_list_values(list* l, unsigned long* num_values_returned);			/*
  * data structure to store internal nodes and delete in O(1)
  */
 extern void remove_internal_list_node(list*l, list_node* internal);		/* O(1) */
+
 extern list_node* create_list_node(void* value);			/* O(1) */
 extern void* free_list_node(list_node* delete_node);			/* O(1) */
+	
 extern list_node* shift_list_node(list* l);				/* O(1) */
 extern void  unshift_list_node(list* l, list_node* new_node);		/* O(1) */
 extern list_node* pop_list_node(list* l);				/* O(1) */
 extern void  push_list_node(list*l, list_node* new_node);		/* O(1) */
+
+
+
+
 
 
 /* priority_queue structs / prototypes */
@@ -177,6 +196,7 @@ typedef struct priority_queue_node_struct
 	char* id;
 	void* value;
 } priority_queue_node;
+
 
 typedef struct priority_queue_struct
 {
@@ -202,9 +222,11 @@ extern void set_priority_for_id_in_priority_queue(priority_queue* pq, char* id, 
 extern priority_queue_node* peek_priority_queue_node(priority_queue* pq);
 extern void** destroy_priority_queue(priority_queue* pq, int destroy_mode, unsigned long* num_destroyed);
 
+
+
 /* string_util structs / prototypes */
 
-typedef struct
+typedef struct 
 {
 	char* str;
 	int terminator;
@@ -227,6 +249,7 @@ extern char* join_strs(char* separator, char** parts, int max_parts, int free_pa
 extern char* dynamic_replace(char* template_str, char* old_str, char* new_str);
 int convert_to_regex(char* str, regex_t* p);
 
+
 /* functions to dynamically read files */
 extern dyn_read_t dynamic_read(FILE* open_file, char* terminators, int num_terminators, unsigned long* read_length);
 extern int dyn_read_line(FILE* open_file, char** dest, unsigned long* read_len);
@@ -235,13 +258,17 @@ extern unsigned char* read_entire_file(FILE* in, unsigned long read_block_size, 
 /* run a command and get (dynamically allocated) output lines */
 extern char** get_shell_command_output_lines(char* command, unsigned long* num_lines);
 
-/*  comparison functions for qsort */
+
+/*  comparison functions for qsort */ 
 extern int sort_string_cmp(const void *a, const void *b);
 extern int sort_string_icmp(const void *a, const void *b);
 
 /* wrappers for qsort calls */
 extern void do_str_sort(char** string_arr, unsigned long string_arr_len);
 extern void do_istr_sort(char** string_arr, unsigned long string_arr_len);
+
+
+
 
 /* safe malloc & strdup functions used by all others (actually aliased to malloc / strdup and used) */
 extern void* safe_malloc(size_t size);
@@ -251,11 +278,14 @@ extern char* safe_strdup(const char* str);
 extern void free_if_not_null(void* p);
 extern void free_and_set_null(void** p);
 
+
 /* other file utils */
 
 extern int mkdir_p(const char* path, mode_t mode); /* returns 0 on success, 1 on error */
 extern void rm_r(const char* path);
 extern int create_tmp_dir(const char* tmp_root, char** tmp_dir); /* returns 0 on success, 1 on error */
+
+
 
 #define PATH_DOES_NOT_EXIST  0
 #define PATH_IS_REGULAR_FILE 1
@@ -272,5 +302,8 @@ returns:
  PATH_IS_OTHER        (4) if path exists and is something else
  */
 extern int path_exists(const char* path);
+
 extern char** get_file_lines(char* file_path, unsigned long* lines_read);
+
+
 #endif /* ERICS_TOOLS_H */

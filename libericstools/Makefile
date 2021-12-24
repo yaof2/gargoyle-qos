@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# $Id: Makefile 9907 2007-12-25 01:59:55Z nbd $
 
 include $(TOPDIR)/rules.mk
 
@@ -12,27 +11,20 @@ PKG_NAME:=libericstools
 PKG_VERSION:=1.0.0
 PKG_RELEASE:=1
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
+PKG_MAINTAINER:=Eric Bishop <eric@gargoyle-router.com>
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libericstools
-	SECTION:=libs
-	CATEGORY:=Gargoyle
-	SUBMENU:=Libraries
-	TITLE:=Erics Tools
-	URL:=http://www.gargoyle-router.com
-	MAINTAINER:=Eric Bishop <eric@gargoyle-router.com>
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE:=Erics Tools
+  URL:=http://www.gargoyle-router.com
 endef
 
 define Package/libericstools/description
-	A bunch of routines/utilities written by Eric Bishop,
-	a library primarily used in Gargoyle Web Interface for OpenWrt
-endef
-
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./src/* $(PKG_BUILD_DIR)
+  A bunch of routines/utilities written by Eric Bishop, a library
+  primarily used in Gargoyle Web Interface for OpenWrt.
 endef
 
 define Build/Configure

@@ -1,7 +1,7 @@
 BINDIR = /usr/sbin
-#TCDIR:=$(BUILD_DIR)/iproute2-full/ip*
-TCDIR:=$(shell if [ -e "${BUILD_DIR}/iproute2-full" ] ; then echo "${BUILD_DIR}/iproute2-full"/ip* ; else echo "${BUILD_DIR}/iproute2-tiny"/ip* ; fi ; )
-
+#TCDIR:=$(BUILD_DIR)/iproute2*/ip*
+#TCDIR:=$(shell if [ -e "${BUILD_DIR}/iproute2-full" ] ; then echo "${BUILD_DIR}/iproute2-full"/ip* ; else echo "${BUILD_DIR}/iproute2-tiny"/ip* ; fi ; )
+TCDIR:=$(STAGING_DIR)/usr/lib/iproute2
 #The ncurses library only needed if we remove the ONLYBG switch
 #below.  Mostly for debug
 #LDLIBS += -lncurses
@@ -13,7 +13,7 @@ TCOBJS += $(TCDIR)/tc/tc_core.o
 TCOBJS += $(TCDIR)/tc/q_hfsc.o
 TCOBJS += $(TCDIR)/lib/libnetlink.a
 TCOBJS += $(TCDIR)/lib/libutil.a
-LDFLAGS += -Wl,-export-dynamic 
+LDFLAGS += -Wl,-export-dynamic
 
 all: qosmon
 
@@ -32,4 +32,3 @@ uninstall:
 
 clean:
 	rm -rf *.o *~ .*sw* qosmon
-

@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work 'as-is' we provide.
  * No warranty, express or implied.
  * We've done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -47,29 +47,24 @@ typedef struct stack_node_struct
 } stack_node;
 
 static void** destroy_long_map_values(long_map* map, int destruction_type, unsigned long* num_destroyed);
-
 static void apply_to_every_long_map_node(long_map_node* node, void (*apply_func)(unsigned long key, void* value));
-
 static void apply_to_every_string_map_node(long_map_node* node, unsigned char has_key, void (*apply_func)(char* key, void* value));
-
 static void get_sorted_node_keys(long_map_node* node, unsigned long* key_list, unsigned long* next_key_index, int depth);
-
 static void get_sorted_node_values(long_map_node* node, void** value_list, unsigned long* next_value_index, int depth);
-
 static signed char rebalance (long_map_node** n, signed char direction, signed char update_op);
-
 static void rotate_right (long_map_node** parent);
-
 static void rotate_left (long_map_node** parent);
 
 /* internal for string map */
-typedef struct
+typedef struct 
 {
 	char* key;
 	void* value;
 } string_map_key_value;
 
+
 static unsigned long sdbm_string_hash(const char *key);
+
 
 /***************************************************
  * For testing only
@@ -91,6 +86,8 @@ void print_list(stack_node *l)
  *******************************************************/
 
 
+
+
 /***************************************************
  * string_map function definitions
  ***************************************************/
@@ -102,7 +99,7 @@ string_map* initialize_string_map(unsigned char store_keys)
 	map->lm.root = NULL;
 	map->lm.num_elements = 0;
 	map->num_elements = map->lm.num_elements;
-
+	
 	return map;
 }
 
@@ -149,7 +146,7 @@ void* remove_string_map_element(string_map* map, const char* key)
 {
 	unsigned long hashed_key = sdbm_string_hash(key);
 	void* return_value =  remove_long_map_element( &(map->lm), hashed_key);
-
+	
 	if(return_value != NULL && map->store_keys)
 	{
 		string_map_key_value* r = (string_map_key_value*)return_value;
@@ -208,7 +205,7 @@ void** destroy_string_map(string_map* map, int destruction_type, unsigned long* 
 			{
 				string_map_key_value* kv = (string_map_key_value*)kvs[kv_index];
 				void* value = kv->value;
-
+				
 				free(kv->key);
 				free(kv);
 				if(destruction_type == DESTROY_MODE_FREE_VALUES)
@@ -238,6 +235,8 @@ void** destroy_string_map(string_map* map, int destruction_type, unsigned long* 
 	return return_values;
 }
 
+
+
 /***************************************************
  * long_map function definitions
  ***************************************************/
@@ -258,7 +257,7 @@ void* get_long_map_element(long_map* map, unsigned long key)
 	if(map->root != NULL)
 	{
 		long_map_node* parent_node = map->root;
-		long_map_node* next_node;
+		long_map_node* next_node;	
 		while( key != parent_node->key && (next_node = (long_map_node *)(key < parent_node->key ? parent_node->left : parent_node->right))  != NULL)
 		{
 			parent_node = next_node;
@@ -276,7 +275,7 @@ void* get_smallest_long_map_element(long_map* map, unsigned long* smallest_key)
 	void* value = NULL;
 	if(map->root != NULL)
 	{
-		long_map_node* next_node = map->root;
+		long_map_node* next_node = map->root;	
 		while( next_node->left != NULL)
 		{
 			next_node = next_node->left;
@@ -292,7 +291,7 @@ void* get_largest_long_map_element(long_map* map, unsigned long* largest_key)
 	void* value = NULL;
 	if(map->root != NULL)
 	{
-		long_map_node* next_node = map->root;
+		long_map_node* next_node = map->root;	
 		while( next_node->right != NULL)
 		{
 			next_node = next_node->right;
@@ -329,6 +328,7 @@ void* set_long_map_element(long_map* map, unsigned long key, void* value)
 	stack_node* previous_parent;
 	signed char new_balance;
 
+
 	long_map_node* new_node = (long_map_node*)malloc(sizeof(long_map_node));
 	new_node->value = value;
 	new_node->key = key;
@@ -336,19 +336,21 @@ void* set_long_map_element(long_map* map, unsigned long key, void* value)
 	new_node->right = NULL;
 	new_node->balance = 0;
 
+	
+
 	if(map->root == NULL)
 	{
-		map->root = new_node;
+		map->root = new_node;	
 	}
 	else
 	{
 		parent_node = map->root;
-
+			
 		next_parent = (stack_node*)malloc(sizeof(stack_node));
 		next_parent->node_ptr =  &(map->root);
 		next_parent->previous = parent_list;
-		parent_list = next_parent;
-
+		parent_list = next_parent;	
+			
 		while( key != parent_node->key && (next_node = (key < parent_node->key ? parent_node->left : parent_node->right) )  != NULL)
 		{
 			next_parent = (stack_node*)malloc(sizeof(stack_node));
@@ -359,8 +361,8 @@ void* set_long_map_element(long_map* map, unsigned long key, void* value)
 
 			parent_node = next_node;
 		}
-
-
+		
+		
 		if(key == parent_node->key)
 		{
 			old_value = parent_node->value;
@@ -370,7 +372,7 @@ void* set_long_map_element(long_map* map, unsigned long key, void* value)
 			/* we merely replaced a node, no need to rebalance */
 		}
 		else
-		{
+		{	
 			if(key < parent_node->key)
 			{
 				parent_node->left = (void*)new_node;
@@ -381,13 +383,13 @@ void* set_long_map_element(long_map* map, unsigned long key, void* value)
 				parent_node->right = (void*)new_node;
 				parent_list->direction = 1;
 			}
-
-
+			
+			
 			/* we inserted a node, rebalance */
 			previous_parent = parent_list;
 			new_balance  = 1; /* initial value is not used, but must not be 0 for initial loop condition */
-
-
+			
+			
 			while(previous_parent != NULL && new_balance != 0)
 			{
 				new_balance = rebalance(previous_parent->node_ptr, previous_parent->direction, 1);
@@ -416,9 +418,10 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 {
 
 	void* value = NULL;
-
-	long_map_node* root_node = map->root;
+	
+	long_map_node* root_node = map->root;	
 	stack_node* parent_list = NULL;
+
 
 	long_map_node* remove_parent;
 	long_map_node* remove_node;
@@ -432,27 +435,31 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 	stack_node* previous_parent;
 	stack_node* replacement_stack_node;
 
+
 	signed char new_balance;
+
+
 
 	if(root_node != NULL)
 	{
 		remove_parent = root_node;
 		remove_node = key < remove_parent->key ? remove_parent->left : remove_parent->right;
-
+		
 		if(remove_node != NULL && key != remove_parent->key)
 		{
 			next_parent = (stack_node*)malloc(sizeof(stack_node));
 			next_parent->node_ptr =  &(map->root);
 			next_parent->previous = parent_list;
-			parent_list = next_parent;
+			parent_list = next_parent;	
 			while( key != remove_node->key && (next_node = (key < remove_node->key ? remove_node->left : remove_node->right))  != NULL)
 			{
 				next_parent = (stack_node*)malloc(sizeof(stack_node));
 				next_parent->node_ptr = key < remove_parent->key ? &(remove_parent->left) : &(remove_parent->right);
 				next_parent->previous = parent_list;
-				next_parent->previous->direction = key < remove_parent->key ? -1 : 1;
+				next_parent->previous->direction = key < remove_parent->key ? -1 : 1; 
 				parent_list = next_parent;
-
+				
+				
 				remove_parent = remove_node;
 				remove_node = next_node;
 			}
@@ -463,8 +470,10 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 			remove_node = remove_parent;
 		}
 
+
 		if(key == remove_node->key)
 		{
+			
 			/* find replacement for node we are deleting */
 			if( remove_node->right == NULL )
 			{
@@ -490,6 +499,7 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 					replacement_stack_node->node_ptr = key < remove_parent-> key ? &(remove_parent->left) : &(remove_parent->right);
 				}
 				parent_list = replacement_stack_node;
+
 			}
 			else
 			{
@@ -507,6 +517,7 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 				}
 
 				parent_list = replacement_stack_node;
+				
 
 				/*
 				 * put pointer to replacement node->right into list for balance update
@@ -517,11 +528,11 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 				replacement_stack_node->previous = parent_list;
 				replacement_stack_node->direction = -1; /* we always look for replacement to left of this node */
 				parent_list = replacement_stack_node;
-
+				
 				/* find smallest node on right (large) side of tree */
 				replacement_parent = remove_node->right;
 				replacement = replacement_parent->left;
-
+				
 				while((replacement_next = replacement->left)  != NULL)
 				{
 					next_parent = (stack_node*)malloc(sizeof(stack_node));
@@ -532,16 +543,17 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 
 					replacement_parent = replacement;
 					replacement = replacement_next;
+
 				}
 
 				replacement_parent->left = replacement->right;
-
+				
 				replacement->left = remove_node->left;
 				replacement->right = remove_node->right;
 				replacement->balance = remove_node->balance;
 				replacement_stack_node->node_ptr = &(replacement->right);
 			}
-
+			
 			/* insert replacement at proper location in tree */
 			if(remove_node == remove_parent)
 			{
@@ -552,6 +564,7 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 				remove_parent->left = remove_node == remove_parent->left ? replacement : remove_parent->left;
 				remove_parent->right = remove_node == remove_parent->right ? replacement : remove_parent->right;
 			}
+		
 
 			/* rebalance tree */
 			previous_parent = parent_list;
@@ -561,8 +574,11 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 				new_balance = rebalance(previous_parent->node_ptr, previous_parent->direction, -1);
 				previous_parent = previous_parent->previous;
 			}
+			
+			
 
-			/*
+
+			/* 
 			 * since we found a value to remove, decrease number of elements in map
 			 *  set return value to the deleted node's value and free the node
 			 */
@@ -572,13 +588,14 @@ void* remove_long_map_element(long_map* map, unsigned long key)
 		}
 	}
 
+
 	while(parent_list != NULL)
 	{
 		previous_parent = parent_list;
 		parent_list = previous_parent->previous;
 		free(previous_parent);
 	}
-
+	
 	return value;
 }
 
@@ -590,11 +607,12 @@ unsigned long* get_sorted_long_map_keys(long_map* map, unsigned long* num_keys_r
 
 	unsigned long next_key_index = 0;
 	get_sorted_node_keys(map->root, key_list, &next_key_index, 0);
-
+	
 	*num_keys_returned = map->num_elements;
 
 	return key_list;
 }
+
 
 void** get_sorted_long_map_values(long_map* map, unsigned long* num_values_returned)
 {
@@ -606,7 +624,9 @@ void** get_sorted_long_map_values(long_map* map, unsigned long* num_values_retur
 
 	*num_values_returned = map->num_elements;
 	return value_list;
+
 }
+
 
 void** destroy_long_map(long_map* map, int destruction_type, unsigned long* num_destroyed)
 {
@@ -649,6 +669,7 @@ void apply_to_every_string_map_value(string_map* map, void (*apply_func)(char* k
 	apply_to_every_string_map_node( (map->lm).root, map->store_keys, apply_func);
 }
 
+
 /***************************************************
  * internal utility function definitions
  ***************************************************/
@@ -687,7 +708,7 @@ static void apply_to_every_long_map_node(long_map_node* node, void (*apply_func)
 	if(node != NULL)
 	{
 		apply_to_every_long_map_node(node->left,  apply_func);
-
+		
 		apply_func(node->key, node->value);
 
 		apply_to_every_long_map_node(node->right, apply_func);
@@ -698,7 +719,7 @@ static void apply_to_every_string_map_node(long_map_node* node, unsigned char ha
 	if(node != NULL)
 	{
 		apply_to_every_string_map_node(node->left, has_key,  apply_func);
-
+		
 		if(has_key)
 		{
 			string_map_key_value* kv = (string_map_key_value*)(node->value);
@@ -718,7 +739,7 @@ static void get_sorted_node_keys(long_map_node* node, unsigned long* key_list, u
 	if(node != NULL)
 	{
 		get_sorted_node_keys(node->left, key_list, next_key_index, depth+1);
-
+		
 		key_list[ *next_key_index ] = node->key;
 		(*next_key_index)++;
 
@@ -731,13 +752,15 @@ static void get_sorted_node_values(long_map_node* node, void** value_list, unsig
 	if(node != NULL)
 	{
 		get_sorted_node_values(node->left, value_list, next_value_index, depth+1);
-
+		
 		value_list[ *next_value_index ] = node->value;
 		(*next_value_index)++;
 
 		get_sorted_node_values(node->right, value_list, next_value_index, depth+1);
 	}
 }
+
+
 
 /*
  * direction = -1 indicates left subtree updated, direction = 1 for right subtree
@@ -746,11 +769,11 @@ static void get_sorted_node_values(long_map_node* node, void** value_list, unsig
 static signed char rebalance (long_map_node** n, signed char direction, signed char update_op)
 {
 	/*
-	printf( "original: key = %ld, balance = %d, update_op=%d, direction=%d\n", (*n)->key, (*n)->balance, update_op, direction);
+	printf( "original: key = %ld, balance = %d, update_op=%d, direction=%d\n", (*n)->key, (*n)->balance, update_op, direction); 
 	*/
 
 	(*n)->balance = (*n)->balance + (update_op*direction);
-
+	
 	if( (*n)->balance <  -1)
 	{
 		if((*n)->left->balance < 0)
@@ -839,13 +862,14 @@ static signed char rebalance (long_map_node** n, signed char direction, signed c
 	return (*n)->balance;
 }
 
+
 static void rotate_right (long_map_node** parent)
 {
 	long_map_node* old_parent = *parent;
 	long_map_node* pivot = old_parent->left;
 	old_parent->left = pivot->right;
 	pivot->right  = old_parent;
-
+	
 	*parent = pivot;
 }
 
@@ -855,13 +879,15 @@ static void rotate_left (long_map_node** parent)
 	long_map_node* pivot = old_parent->right;
 	old_parent->right = pivot->left;
 	pivot->left  = old_parent;
-
+	
 	*parent = pivot;
 }
 
+
+
 /***************************************************************************
- * This algorithm was created for the sdbm database library (a public-domain
- * reimplementation of ndbm) and seems to work relatively well in
+ * This algorithm was created for the sdbm database library (a public-domain 
+ * reimplementation of ndbm) and seems to work relatively well in 
  * scrambling bits
  *
  *
@@ -882,3 +908,4 @@ static unsigned long sdbm_string_hash(const char *key)
 	}
 	return hashed_key;
 }
+

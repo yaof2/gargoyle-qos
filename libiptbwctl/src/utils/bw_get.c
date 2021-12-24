@@ -94,7 +94,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-
 	if(id == NULL)
 	{
 		fprintf(stderr, "ERROR: you must specify an id to query\n\n");
@@ -134,7 +133,6 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-
 	if(out_file_path != NULL)
 	{
 		if(get_history == 0)
@@ -159,7 +157,7 @@ int main(int argc, char **argv)
 	}
 	if(num_ips == 0)
 	{
-		if(output_type != 't' && output_type != 'm')
+	       	if(output_type != 't' && output_type != 'm')
 		{
 			fprintf(stderr, "No data available for id \"%s\"\n", id);
 		}

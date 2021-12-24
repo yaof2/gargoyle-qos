@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work ‘as-is’ we provide.
  * No warranty, express or implied.
  * We’ve done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -34,9 +34,12 @@
  *
  */
 
+
+
 #include "erics_tools.h"
 #define malloc safe_malloc
 #define strdup safe_strdup
+
 
 static int __srand_called = 0;
 
@@ -131,7 +134,7 @@ void rm_r(const char* path)
 {
 	struct stat fs;
 	if(lstat(path,&fs) >= 0)
-	{
+	{ 	
 		if(S_ISDIR (fs.st_mode))
 		{
 			/* remove directory recursively */
@@ -142,20 +145,20 @@ void rm_r(const char* path)
 			for(entry_path_index=0; entry_path_index < num_entry_paths; entry_path_index++)
 			{
 				struct dirent *dentry = entries[entry_path_index];
-				if(strcmp(dentry->d_name, "..") != 0 && strcmp(dentry->d_name, ".") != 0)
+				if(strcmp(dentry->d_name, "..") != 0 && strcmp(dentry->d_name, ".") != 0) 
 				{
 					char* entry_path = (char*)malloc(strlen(path) + strlen(dentry->d_name) + 2);
 					sprintf(entry_path,"%s/%s", path, dentry->d_name);
-
+					
 					/* recurse */
 					rm_r(entry_path);
-
+					
 					free(entry_path);
 				}
 			}
 			remove(path);
 		}
-		else
+		else 
 		{
 			/* remove regular file, no need to recurse */
 			remove(path);
@@ -187,3 +190,6 @@ char** get_file_lines(char* file_path, unsigned long* lines_read)
 	}
 	return result;
 }
+
+
+

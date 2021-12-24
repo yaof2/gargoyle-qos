@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work ‘as-is’ we provide.
  * No warranty, express or implied.
  * We’ve done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -34,9 +34,11 @@
  *
  */
 
+
 #include "erics_tools.h"
 #define malloc safe_malloc
 #define strdup safe_strdup
+
 
 list* initialize_list()
 {
@@ -55,7 +57,6 @@ list_node* create_list_node(void* value)
 	new_node->next = NULL;
 	return new_node;
 }
-
 void* free_list_node(list_node* delete_node)
 {
 	void* value = NULL;
@@ -66,6 +67,7 @@ void* free_list_node(list_node* delete_node)
 	}
 	return value;
 }
+
 
 list_node* shift_list_node(list* l)
 {
@@ -80,14 +82,13 @@ list_node* shift_list_node(list* l)
 			if(l->head != NULL) { l->head->previous = NULL; }
 			l->tail = l->tail == return_node ? NULL : l->tail;
 			l->length = l->length -1;
-
+			
 			return_node->previous = NULL;
 			return_node->next = NULL;
 		}
 	}
 	return return_node;
 }
-
 void unshift_list_node(list* l, list_node* new_node)
 {
 	if(l != NULL && new_node != NULL)
@@ -108,7 +109,6 @@ void unshift_list_node(list* l, list_node* new_node)
 		l->length = l->length +1;
 	}
 }
-
 list_node* pop_list_node(list* l)
 {
 	list_node* return_node = NULL;
@@ -129,7 +129,6 @@ list_node* pop_list_node(list* l)
 	return return_node;
 
 }
-
 void  push_list_node(list* l, list_node* new_node)
 {
 	if(l != NULL && new_node != NULL)
@@ -150,17 +149,16 @@ void  push_list_node(list* l, list_node* new_node)
 	}
 }
 
+
 void* shift_list(list* l)
 {
 	return free_list_node ( shift_list_node(l) );
 }
-
 void  unshift_list(list* l, void* value)
 {
 	list_node* new_node = create_list_node(value);
 	unshift_list_node(l, new_node);
 }
-
 void* pop_list(list* l)
 {
 	return free_list_node ( pop_list_node(l) );
@@ -171,6 +169,8 @@ void  push_list(list*l, void* value)
 	list_node* new_node = create_list_node(value);
 	push_list_node(l, new_node);
 }
+
+
 
 void remove_internal_list_node(list* l, list_node* internal)
 {
@@ -200,6 +200,8 @@ void remove_internal_list_node(list* l, list_node* internal)
 		l->length = l->length - 1;
 	}
 }
+
+
 
 void**  destroy_list(list* l, int destruction_type, unsigned long* num_values)
 {
@@ -261,7 +263,7 @@ void** get_list_values(list* l, unsigned long* num_values) /* returns null termi
 	unsigned long value_index = 0;
 	if(l != NULL)
 	{
-
+		
 		list_node* current_node = l->head;
 		values = (void**)malloc((1+l->length)*sizeof(void*));
 
@@ -275,3 +277,4 @@ void** get_list_values(list* l, unsigned long* num_values) /* returns null termi
 	*num_values = value_index;
 	return values;
 }
+

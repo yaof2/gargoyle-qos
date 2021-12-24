@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work ‘as-is’ we provide.
  * No warranty, express or implied.
  * We’ve done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -53,6 +53,7 @@ priority_queue* initialize_priority_queue(void)
 	pq->first = NULL;
 	pq->length = 0;
 	return pq;
+
 }
 
 priority_queue_node* create_priority_node(unsigned long priority, char* id, void* value)
@@ -63,7 +64,6 @@ priority_queue_node* create_priority_node(unsigned long priority, char* id, void
 	pn->value = value;
 	return pn;
 }
-
 void* free_priority_queue_node(priority_queue_node* pn)
 {
 	void *return_value = NULL;
@@ -124,6 +124,7 @@ void* peek_priority_queue(priority_queue* pq, unsigned long* priority, char** id
 	return return_value;
 }
 
+
 void* get_priority_queue_element_with_id(priority_queue* pq, char* id, long* priority)
 {
 	void* return_value = NULL;
@@ -156,6 +157,7 @@ void* remove_priority_queue_element_with_id(priority_queue* pq, char* id, long* 
 	return return_value;
 }
 
+
 void push_priority_queue_node(priority_queue* pq, priority_queue_node* pn)
 {
 	if(pq != NULL && pn != NULL)
@@ -185,6 +187,9 @@ void push_priority_queue_node(priority_queue* pq, priority_queue_node* pn)
 		{
 			pq->first = pn;
 		}
+	
+
+
 
 		/* save id */
 		idn = (id_map_node*)malloc(sizeof(id_map_node));
@@ -222,7 +227,7 @@ priority_queue_node* shift_priority_queue_node(priority_queue* pq)
 			return_node = free_list_node(smallest_list_node);
 			idn = (id_map_node*)remove_string_map_element(pq->ids, return_node->id);
 			free(idn);
-
+		
 			if(next_first_list != NULL)
 			{
 				list_node* next_first_node = shift_list_node(next_first_list);
@@ -237,8 +242,10 @@ priority_queue_node* shift_priority_queue_node(priority_queue* pq)
 			pq->length = pq->length -1;
 		}
 	}
+		
 	return return_node;
 }
+
 
 priority_queue_node* get_priority_queue_node_with_id(priority_queue* pq, char* id)
 {
@@ -253,6 +260,7 @@ priority_queue_node* get_priority_queue_node_with_id(priority_queue* pq, char* i
 	}
 	return return_node;
 }
+
 
 priority_queue_node* remove_priority_queue_node_with_id(priority_queue* pq, char* id)
 {
@@ -348,3 +356,5 @@ void** destroy_priority_queue(priority_queue* pq, int destroy_mode, unsigned lon
 	}
 	return values;
 }
+
+

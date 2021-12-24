@@ -40,15 +40,16 @@ static int unlock_sem(int sid);
 static int lock(unsigned long max_wait_milliseconds);
 static int unlock(void);
 
+
 /* needed to calculate history time intervals */
-static time_t get_next_node_start_time(time_t current_start_time,
+static time_t get_next_node_start_time(		time_t current_start_time,
 						time_t reset_interval,
 						time_t reset_time,
 						unsigned char is_constant_interval
 						);
 
 /* functions used to get data from kernel module */
-static void parse_returned_ip_data(void *out_data,
+static void parse_returned_ip_data(		void *out_data,
 						uint32_t* out_index,
 						unsigned char* in_buffer,
 						uint32_t* in_index,
@@ -58,7 +59,7 @@ static void parse_returned_ip_data(void *out_data,
 						unsigned char is_constant_interval
 						);
 
-static int get_bandwidth_data(char* id,
+static int get_bandwidth_data(			char* id,
 						unsigned char get_history,
 						char* ip,
 						unsigned long* num_ips,
@@ -66,15 +67,16 @@ static int get_bandwidth_data(char* id,
 						unsigned long max_wait_milliseconds
 						);
 
+
 /* functions used to send/restore data to kernel module */
-static int set_ip_block(void* ip_block_data,
+static int set_ip_block(			void* ip_block_data,
 						unsigned char is_history,
 						unsigned char* output_buffer,
 						uint32_t* current_output_index,
 						uint32_t output_buffer_length
 						);
 
-static int set_bandwidth_data(char* id,
+static int set_bandwidth_data(			char* id,
 						unsigned char zero_unset,
 						unsigned char set_history,
 						unsigned long num_ips,
@@ -84,12 +86,12 @@ static int set_bandwidth_data(char* id,
 						);
 
 /* utility i/o functions when saving/restoring data to/from file */
-static unsigned char* read_entire_file(FILE* in,
+static unsigned char* read_entire_file(		FILE* in,
 						unsigned long read_block_size,
 						unsigned long *length
 						);
 
-static char** split_on_separators(char* line,
+static char** split_on_separators(		char* line,
 						char* separators,
 						int num_separators,
 						int max_pieces,
@@ -99,23 +101,24 @@ static char** split_on_separators(char* line,
 
 static int get_sem_val(int sid, int member)
 {
-	int semval;
-	semval = semctl(sid, member, GETVAL, 0);
-	return(semval);
+        int semval;
+        semval = semctl(sid, member, GETVAL, 0);
+        return(semval);
 }
 
 static int get_sem(int *sid, key_t key)
 {
-	int cntr;
-	union semun semopts;
+        int cntr;
+        union semun semopts;
 	int members = 1;
+
 
 	int success = ((*sid = semget(key, members, IPC_CREAT|IPC_EXCL|0777))== -1) ? 0 : 1;
 	if(success)
 	{
 		semopts.val = 1;
-		/* Initialize all members (could be done with SETALL) */
-		for(cntr=0; cntr<members; cntr++)
+        	/* Initialize all members (could be done with SETALL) */
+        	for(cntr=0; cntr<members; cntr++)
 		{
 			semctl(*sid, cntr, SETVAL, semopts);
 		}
@@ -130,17 +133,17 @@ static int get_sem(int *sid, key_t key)
 static int lock_sem(int sid)
 {
 	int member = 0;
-	struct sembuf sem_lock={ 0, -1, IPC_NOWAIT};
+        struct sembuf sem_lock={ 0, -1, IPC_NOWAIT};
 	int success = 0;
 
 	//printf("locking sem, member count = %d\n", get_sem_member_count(sid)  );
 
-	/* Attempt to lock the semaphore set */
+       	/* Attempt to lock the semaphore set */
 	int semval = get_sem_val(sid, member);
 	if(semval > 0)
-	{
-		sem_lock.sem_num = member;
-		if((semop(sid, &sem_lock, 1)) != -1)
+       	{
+       		sem_lock.sem_num = member;
+       		if((semop(sid, &sem_lock, 1)) != -1)
 		{
 			success = 1;
 		}
@@ -152,12 +155,13 @@ static int lock_sem(int sid)
 static int unlock_sem(int sid)
 {
 	int member = 0;
-	struct sembuf sem_unlock={ member, 1, IPC_NOWAIT};
+        struct sembuf sem_unlock={ member, 1, IPC_NOWAIT};
 
 	/* will fail if we can't can't unlock semaphore for some reason,
 	 * will NOT fail if semaphore is already unlocked
 	 */
 	int success = 1;
+
 
 	/* Is the semaphore set locked? */
 	int semval = get_sem_val(sid, member);
@@ -165,12 +169,10 @@ static int unlock_sem(int sid)
 	{
 		/* it's locked, unlock it */
 		sem_unlock.sem_num = member;
-		success = ((semop(sid, &sem_unlock, 1)) == -1) ? 0 : 1;
+        	success = ((semop(sid, &sem_unlock, 1)) == -1) ? 0 : 1;
 	}
 	return success;
 }
-
-
 
 static int lock(unsigned long max_wait_milliseconds)
 {
@@ -208,7 +210,7 @@ static int unlock(void)
 	return unlocked;
 }
 
-static time_t get_next_node_start_time(time_t current_start_time,
+static time_t get_next_node_start_time(		time_t current_start_time,
 						time_t reset_interval,
 						time_t reset_time,
 						unsigned char is_constant_interval
@@ -277,7 +279,7 @@ static time_t get_next_node_start_time(time_t current_start_time,
 	return next;
 }
 
-static void parse_returned_ip_data(void *out_data,
+static void parse_returned_ip_data(	void *out_data,
 					uint32_t* out_index,
 					unsigned char* in_buffer,
 					uint32_t* in_index,
@@ -303,7 +305,7 @@ static void parse_returned_ip_data(void *out_data,
 			history->reset_time = reset_time;
 			history->is_constant_interval = is_constant_interval;
 
-			history->ip = ip_bw_data->ip;
+            history->ip = ip_bw_data->ip;
 			history->num_nodes = ip_bw_data->num_nodes;
 			history->first_start = ip_bw_data->first_start;
 			history->first_end   = ip_bw_data->first_end;
@@ -313,10 +315,10 @@ static void parse_returned_ip_data(void *out_data,
 
 			/* read bws */
 			int node_index = 0;
-			*in_index += 32;
-			for (node_index = 0; node_index < history->num_nodes; node_index++)
+            *in_index += 32;
+            for (node_index = 0; node_index < history->num_nodes; node_index++)
 			{
-				*in_index += 8;
+                *in_index += 8;
 				(history->history_bws)[node_index] =  ip_bw_data->ipbw_data[node_index];
 			}
 
@@ -344,6 +346,7 @@ static void parse_returned_ip_data(void *out_data,
 
 static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, unsigned long* num_ips, void** data, unsigned long max_wait_milliseconds)
 {
+
 	unsigned char buf[BANDWIDTH_QUERY_LENGTH];
 	memset(buf, '\0',  BANDWIDTH_QUERY_LENGTH);
 	int done = 0;
@@ -374,6 +377,7 @@ static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, uns
 		inet_aton(ip, &addr);
 		*request_ip = (uint32_t)addr.s_addr;
 	}
+
 	*request_index = 0;
 	*request_history = get_history;
 	sprintf(request_id, "%s", id);
@@ -381,12 +385,12 @@ static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, uns
 	unsigned char error = 0;
 	unsigned char data_initialized = 0;
 	uint32_t data_index = 0;
+	uint32_t next_request_index = 0;
+
 	while(!done && sockfd >= 0 && got_lock)
 	{
 		uint32_t size = BANDWIDTH_QUERY_LENGTH;
-
 		getsockopt(sockfd, IPPROTO_IP, BANDWIDTH_GET, buf, &size);
-
 		error = (unsigned char)buf[0];
 		if(error != 0)
 		{
@@ -414,6 +418,7 @@ static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, uns
 					*data = (void*)malloc(sizeof(ip_bw)*(total_ips+1));
 					memset(*data, 0, sizeof(ip_bw)*(total_ips+1));
 				}
+				data_initialized = 1;
 			}
 
 			int response_index=0;
@@ -422,8 +427,26 @@ static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, uns
 			{
 				parse_returned_ip_data(*data, &data_index, buf, &buffer_index, get_history, reset_interval, reset_time, is_constant_interval);
 			}
-			*request_index= *request_index + response_ips;
-			done = *request_index < total_ips ? 0 : 1;
+			next_request_index = next_request_index + response_ips;
+			done = next_request_index < total_ips ? 0 : 1;
+			if(!done)
+			{
+				memset(buf, '\0',  BANDWIDTH_QUERY_LENGTH);
+
+				if(strcmp(ip, "ALL") == 0)
+				{
+					*request_ip = 0;
+				}
+				else
+				{
+					struct in_addr addr;
+					inet_aton(ip, &addr);
+					*request_ip = (uint32_t)addr.s_addr;
+				}
+				*request_index = next_request_index;
+				*request_history = get_history;
+				sprintf(request_id, "%s", id);
+			}
 		}
 	}
 	if( (error != 0) && data_initialized)
@@ -448,6 +471,7 @@ static int get_bandwidth_data(char* id, unsigned char get_history, char* ip, uns
 	{
 		unlock();
 	}
+
 	return got_lock && (error == 0);
 }
 
@@ -499,6 +523,7 @@ static int set_ip_block(void* ip_block_data, unsigned char is_history, unsigned 
 		first_end = first_end + (get_minutes_west(first_end)-current_minutes_west);
 		last_end = last_end + (get_minutes_west(last_end)-current_minutes_west);
 
+
 		*( (uint64_t*)(output_buffer + *current_output_index) ) = (uint64_t)first_start;
 		*current_output_index = *current_output_index + 8;
 
@@ -533,6 +558,7 @@ static int set_ip_block(void* ip_block_data, unsigned char is_history, unsigned 
 		printf("setting ip = %s, ip index = %ld\n", inet_ntoa(addr), (*current_output_index)-4);
 		printf("setting bw = %lld, bw_index = %ld\n", ib->bw, *current_output_index);
 		*/
+
 		*current_output_index = *current_output_index + 8;
 	}
 	return 0;
@@ -565,7 +591,7 @@ static int set_bandwidth_data(char* id, unsigned char zero_unset, unsigned char 
 	*history_included = set_history;
 	*zero_unset_ips = zero_unset;
 	*last_backup_time = (uint64_t)last_backup;
-	memcpy(set_id, id, BANDWIDTH_MAX_ID_LENGTH);
+	strncpy(set_id, id, BANDWIDTH_MAX_ID_LENGTH);
 	set_id[BANDWIDTH_MAX_ID_LENGTH-1] = '\0';
 
 	while(!done && sockfd >= 0 && got_lock)
@@ -577,6 +603,7 @@ static int set_bandwidth_data(char* id, unsigned char zero_unset, unsigned char 
 		*num_ips_in_buffer = 0;
 		done = (ip_index >= *total_ips);
 
+
 		while( (!buffer_full) && (!done) )
 		{
 			void *next_data = set_history ? (void*)(((ip_bw_history*)data) + ip_index) : (void*)(((ip_bw*)data) + ip_index);
@@ -584,6 +611,7 @@ static int set_bandwidth_data(char* id, unsigned char zero_unset, unsigned char 
 			ip_index = buffer_full ? ip_index : ip_index+1;
 			*num_ips_in_buffer = buffer_full ? *num_ips_in_buffer : *num_ips_in_buffer + 1;
 			done = (ip_index >= *total_ips);
+
 		}
 		setsockopt(sockfd, IPPROTO_IP, BANDWIDTH_SET, buf, BANDWIDTH_QUERY_LENGTH);
 
@@ -624,7 +652,7 @@ static unsigned char* read_entire_file(FILE* in, unsigned long read_block_size, 
 		{
 			unsigned char *new_str;
 			max_read_size = max_read_size + read_block_size;
-			new_str = (unsigned char*)malloc(max_read_size+1);
+		       	new_str = (unsigned char*)malloc(max_read_size+1);
 			memcpy(new_str, read_string, bytes_read);
 			free(read_string);
 			read_string = new_str;
@@ -678,7 +706,6 @@ static char** split_on_separators(char* line, char* separators, int num_separato
 		split = (char**)malloc((1+max_pieces)*sizeof(char*));
 		split_index = 0;
 		split[split_index] = NULL;
-
 
 		dup_line = strdup(line);
 		start = dup_line;
@@ -844,7 +871,7 @@ int save_usage_to_file(ip_bw* data, unsigned long num_ips, char* out_file_path)
 		//dump backup time
 		time_t now;
 		time(&now);
-		fprintf(out_file, "%-15ld\n", now);
+		fprintf(out_file, "%-15lld\n", now);
 
 		//dump ips
 		int out_index=0;
@@ -952,7 +979,6 @@ int save_history_to_file(ip_bw_history* data, unsigned long num_ips, char* out_f
 	return success;
 }
 
-
 ip_bw* load_usage_from_file(char* in_file_path, unsigned long* num_ips, time_t* last_backup)
 {
 	ip_bw* data = NULL;
@@ -969,7 +995,7 @@ ip_bw* load_usage_from_file(char* in_file_path, unsigned long* num_ips, time_t* 
 		free(file_data);
 
 		*num_ips = (num_data_parts/2) + 1;
-		data = (ip_bw*)malloc( (*num_ips) * sizeof(ip_bw) );
+       		data = (ip_bw*)malloc( (*num_ips) * sizeof(ip_bw) );
 		*num_ips = 0;
 		unsigned long data_index = 0;
 		unsigned long data_part_index = 0;
@@ -977,12 +1003,13 @@ ip_bw* load_usage_from_file(char* in_file_path, unsigned long* num_ips, time_t* 
 		{
 			ip_bw next;
 			struct in_addr ipaddr;
-			int valid = inet_aton(data_parts[data_part_index], &ipaddr);
-			if(!valid)
+			if(data_part_index == 0)
 			{
-				sscanf(data_parts[data_part_index], "%ld", last_backup);
+				sscanf(data_parts[data_part_index], "%lld", last_backup);
 				//printf("last_backup = %ld\n", *last_backup);
+				data_part_index++;
 			}
+			int valid = inet_aton(data_parts[data_part_index], &ipaddr);
 			data_part_index++;
 
 			if(valid && data_index < num_data_parts)
@@ -1096,7 +1123,6 @@ ip_bw_history* load_history_from_file(char* in_file_path, unsigned long* num_ips
 	return data;
 }
 
-
 void print_usage(FILE* out, ip_bw* usage, unsigned long num_ips)
 {
 	unsigned long usage_index;
@@ -1146,7 +1172,6 @@ void print_histories(FILE* out, char* id, ip_bw_history* histories, unsigned lon
 				ip_str = strdup("COMBINED");
 			}
 
-
 			if(output_type == 'm' || output_type == 'h')
 			{
 				fprintf(out, "%s %-15s\n", id, ip_str);
@@ -1154,9 +1179,9 @@ void print_histories(FILE* out, char* id, ip_bw_history* histories, unsigned lon
 
 			if(output_type == 'm')
 			{
-				printf("%ld\n", history.first_start);
-				printf("%ld\n", history.first_end);
-				printf("%ld\n", history.last_end);
+				printf("%lld\n", history.first_start);
+				printf("%lld\n", history.first_end);
+				printf("%lld\n", history.last_end);
 			}
 			else
 			{
@@ -1196,8 +1221,9 @@ void print_histories(FILE* out, char* id, ip_bw_history* histories, unsigned lon
 					}
 					else
 					{
-						fprintf(out, "%s,%s,%ld,%ld,%lld\n", id, ip_str, start, end, (unsigned long long int)bw );
+						fprintf(out, "%s,%s,%lld,%lld,%lld\n", id, ip_str, start, end, (unsigned long long int)bw);
 					}
+
 					free(start_str);
 					free(end_str);
 				}
@@ -1229,6 +1255,7 @@ void unlock_bandwidth_semaphore_on_exit(void)
 	signal(SIGINT, signal_handler);
 }
 
+
 int get_minutes_west(time_t now)
 {
 	struct tm* utc_info;
@@ -1257,7 +1284,6 @@ int get_minutes_west(time_t now)
 
 	return minuteswest;
 }
-
 
 void set_kernel_timezone(void)
 {

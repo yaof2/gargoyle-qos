@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work ‘as-is’ we provide.
  * No warranty, express or implied.
  * We’ve done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -38,6 +38,9 @@
 #define malloc safe_malloc
 #define strdup safe_strdup
 
+
+
+
 char* replace_prefix(char* original, char* old_prefix, char* new_prefix)
 {
 	char* replaced = NULL;
@@ -48,7 +51,7 @@ char* replace_prefix(char* original, char* old_prefix, char* new_prefix)
 		int remainder_length = strlen(original) - old_prefix_length;
 		int new_length = new_prefix_length + remainder_length;
 		/* printf("%d %d %d %d\n", old_prefix_length, new_prefix_length, remainder_length, new_length); */
-
+		
 		replaced = malloc(new_length+1);
 		memcpy(replaced, new_prefix, new_prefix_length);
 		memcpy(replaced+new_prefix_length, original+old_prefix_length, remainder_length);
@@ -64,8 +67,8 @@ char* trim_flanking_whitespace(char* str)
 
 	char whitespace[5] = { ' ', '\t', '\n', '\r', '\0' };
 	int num_whitespace_chars = 4;
-
-
+	
+	
 	int index = 0;
 	int is_whitespace = 1;
 	int test;
@@ -81,6 +84,7 @@ char* trim_flanking_whitespace(char* str)
 	}
 	new_start = index;
 
+
 	index = strlen(str) - 1;
 	is_whitespace = 1;
 	while( index >= new_start && is_whitespace == 1)
@@ -94,7 +98,7 @@ char* trim_flanking_whitespace(char* str)
 		index = is_whitespace == 1 ? index-1 : index;
 	}
 	new_length = str[new_start] == '\0' ? 0 : index + 1 - new_start;
-
+	
 
 	if(new_start > 0)
 	{
@@ -124,6 +128,7 @@ int safe_strcmp(const char* str1, const char* str2)
 	return strcmp(str1, str2);
 }
 
+
 void to_lowercase(char* str)
 {
 	int i;
@@ -132,7 +137,6 @@ void to_lowercase(char* str)
 		str[i] = tolower(str[i]);
 	}
 }
-
 void to_uppercase(char* str)
 {
 	int i;
@@ -171,15 +175,17 @@ char** copy_null_terminated_string_array(char** original)
 	return new;
 }
 
+
+
 char* dynamic_strcat(int num_strs, ...)
 {
-
+	
 	va_list strs;
 	int new_length = 0;
 	int i;
 	int next_start;
 	char* new_str;
-
+		
 	va_start(strs, num_strs);
 	for(i=0; i < num_strs; i++)
 	{
@@ -190,7 +196,7 @@ char* dynamic_strcat(int num_strs, ...)
 		}
 	}
 	va_end(strs);
-
+	
 	new_str = malloc((1+new_length)*sizeof(char));
 	va_start(strs, num_strs);
 	next_start = 0;
@@ -205,14 +211,14 @@ char* dynamic_strcat(int num_strs, ...)
 		}
 	}
 	new_str[next_start] = '\0';
-
+	
 	return new_str;
 }
 
 char* dcat_and_free(char** one, char** two, int free1, int free2)
 {
 	char* s = NULL;
-
+	
 	if(one != NULL && two != NULL) { s = dynamic_strcat(2, *one, *two); }
 	else if(one != NULL) { s = strdup(*one); }
 	else if(two != NULL) { s = strdup(*two); }
@@ -220,26 +226,27 @@ char* dcat_and_free(char** one, char** two, int free1, int free2)
 
 	if(free1){ free(*one); *one=s; }
 	if(free2){ free(*two); *two=s; }
-
+	
 	return s;
 }
+
 
 /*
  * line is the line to be parsed -- it is not modified in any way
  * max_pieces indicates number of pieces to return, if negative this is determined dynamically
- * include_remainder_at_max indicates whether the last piece, when max pieces are reached,
+ * include_remainder_at_max indicates whether the last piece, when max pieces are reached, 
  * 	should be what it would normally be (0) or the entire remainder of the line (1)
  * 	if max_pieces < 0 this parameter is ignored
  *
  *
  * returns all non-separator pieces in a line
- * result is dynamically allocated, MUST be freed after call-- even if
+ * result is dynamically allocated, MUST be freed after call-- even if 
  * line is empty (you still get a valid char** pointer to to a NULL char*)
  */
 char** split_on_separators(char* line, char* separators, int num_separators, int max_pieces, int include_remainder_at_max, unsigned long *num_pieces)
 {
 	char** split;
-
+	
 	*num_pieces = 0;
 	if(line != NULL)
 	{
@@ -305,7 +312,7 @@ char** split_on_separators(char* line, char* separators, int num_separators, int
 					first_separator_index++;
 				}
 			}
-
+			
 			/* copy next piece to split array */
 			if(first_separator_index > 0)
 			{
@@ -423,9 +430,10 @@ char* dynamic_replace(char* template_str, char* old, char* new)
 	return ret;
 }
 
+
 /*
  requires expression to be surrounded by '/' characters, and deals with escape
- characters '\/', '\r', '\n', and '\t' when escapes haven't been interpreted
+ characters '\/', '\r', '\n', and '\t' when escapes haven't been interpreted 
  (e.g. after recieving regex string from user)
 
  returns 1 on good regex, 0 on bad regex
@@ -435,7 +443,7 @@ int convert_to_regex(char* str, regex_t* p)
 	char* trimmed = trim_flanking_whitespace(strdup(str));
 	int trimmed_length = strlen(trimmed);
 	char* new = NULL;
-
+	
 	int valid = 1;
 	/* regex must be defined by surrounding '/' characters */
 	if(trimmed[0] != '/' || trimmed[trimmed_length-1] != '/')
@@ -447,13 +455,13 @@ int convert_to_regex(char* str, regex_t* p)
 	if(valid == 1)
 	{
 		char* internal = (char*)malloc(trimmed_length*sizeof(char));
-		int internal_length = trimmed_length-2;
-
+		int internal_length = trimmed_length-2;	
+		
 		int new_index = 0;
 		int internal_index = 0;
 		char previous = '\0';
 
-
+		
 		memcpy(internal, trimmed+1, internal_length);
 		internal[internal_length] = '\0';
 		free(trimmed);
@@ -524,9 +532,12 @@ int convert_to_regex(char* str, regex_t* p)
 		}
 		free(new);
 	}
-
-	return valid;
+	
+	return valid;	
 }
+
+
+
 
 /* note: str element in return value is dynamically allocated, need to free */
 dyn_read_t dynamic_read(FILE* open_file, char* terminators, int num_terminators, unsigned long* read_length)
@@ -539,7 +550,7 @@ dyn_read_t dynamic_read(FILE* open_file, char* terminators, int num_terminators,
 	dyn_read_t ret_value;
 
 	fgetpos(open_file, &start_pos);
-
+	
 	while(terminator_found == 0)
 	{
 		int nextch = fgetc(open_file);
@@ -570,8 +581,8 @@ dyn_read_t dynamic_read(FILE* open_file, char* terminators, int num_terminators,
 	}
 	str[size_to_read] = '\0';
 	*read_length = size_to_read;
-
-
+	
+	
 	ret_value.str = str;
 	ret_value.terminator = terminator;
 
@@ -643,16 +654,16 @@ char** get_shell_command_output_lines(char* command, unsigned long* num_lines)
 	return ret;
 }
 
-/*  comparison functions for qsort */
+/*  comparison functions for qsort */ 
 int sort_string_cmp(const void *a, const void *b)
-{
+{ 
     const char **a_ptr = (const char **)a;
     const char **b_ptr = (const char **)b;
     return strcmp(*a_ptr, *b_ptr);
 }
 
 int sort_string_icmp(const void *a, const void *b)
-{
+{ 
     const char **a_ptr = (const char **)a;
     const char **b_ptr = (const char **)b;
     return stricmp(*a_ptr, *b_ptr);
@@ -667,3 +678,6 @@ void do_istr_sort(char** string_arr, unsigned long string_arr_len)
 {
 	qsort(string_arr, string_arr_len, sizeof(char*), sort_string_icmp);
 }
+
+
+

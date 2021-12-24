@@ -1,33 +1,24 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qos-gargoyle
-PKG_VERSION:=1.0.2
+PKG_VERSION:=1.0.0
 PKG_RELEASE:=1
-PKG_LICENSE:=GPL-3.0+
-PKG_MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
 
-PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
+PKG_MAINTAINER:=Eric Bishop <eric@gargoyle-router.com>
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 define Package/qos-gargoyle
-	SECTION:=net
-	CATEGORY:=Gargoyle
-	SUBMENU:=Network
-	TITLE:=A set of QoS scripts
-	DEPENDS:=+tc +ip +kmod-sched +iptables-mod-filter +iptables-mod-ipopt +iptables-mod-imq
-	MAINTAINER:=Xingwang Liao <kuoruan@gmail.com>
-	PKGARCH:=all
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=QoS scripts for Gargoyle Web Interface
+  DEPENDS:=+tc +ip +kmod-sched +iptables-mod-filter +iptables-mod-ipopt \
+	+iptables-mod-imq +gargoyle-firewall-util
 endef
 
 define Package/qos-gargoyle/description
-	A set of QoS scripts from Gargoyle
-endef
-
-define Build/Prepare
-	mkdir -p $(PKG_BUILD_DIR)
-	$(CP) ./src/* $(PKG_BUILD_DIR)/
-	$(call Build/Prepare/Default)
+  A set of QoS scripts designed for use with Gargoyle Web Interface
 endef
 
 define Build/Configure
@@ -39,7 +30,7 @@ define Build/Compile
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS) -I $(STAGING_DIR)/usr/include" \
 		LDFLAGS="$(TARGET_LDFLAGS) -L $(STAGING_DIR)/usr/lib" \
-		BUILD_DIR="$(BUILD_DIR)" \
+		BUILD_DIR="$(KERNEL_BUILD_DIR)" \
 		all
 endef
 
@@ -57,10 +48,9 @@ define Package/qos-gargoyle/install
 endef
 
 define Package/qos-gargoyle/prerm
-	#!/bin/sh
 	$${IPKG_INSTROOT}/etc/init.d/qos_gargoyle stop 2>/dev/null
 	$${IPKG_INSTROOT}/etc/init.d/qos_gargoyle disable 2>/dev/null
-	exit 0
+	ls >/dev/null 2>&1
 endef
 
 $(eval $(call BuildPackage,qos-gargoyle))

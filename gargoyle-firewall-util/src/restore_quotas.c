@@ -32,6 +32,7 @@
 #include <erics_tools.h>
 #include <uci.h>
 #include <ipt_bwctl.h>
+
 #define malloc safe_malloc
 #define strdup safe_strdup
 
@@ -60,14 +61,14 @@ int main(int argc, char** argv)
 	char* death_mark = NULL;
 	char* death_mask = NULL;
 	char* crontab_line = NULL;
-	int ret;
+    int ret;
 
 	unsigned char full_qos_active = 0;
 
 	char c;
 	while((ret = getopt(argc, argv, "W:w:s:S:d:D:m:M:c:C:qQ")) != -1) //section, page, css includes, javascript includes, title, output interface variables
 	{
-		c = ret;
+        c = ret;
 		switch(c)
 		{
 			case 'W':
@@ -169,6 +170,7 @@ int main(int argc, char** argv)
 						if(oldval != NULL) { free(oldval); }
 						oldval = set_long_map_element(down_speeds, down, strdup(exceeded_down_speed_str) );
 						if(oldval != NULL) { free(oldval); }
+
 					}
 				}
 			}
@@ -176,6 +178,7 @@ int main(int argc, char** argv)
 			free(exceeded_up_speed_str);
 			free(exceeded_down_speed_str);
 		}
+
 		unsigned long num_destroyed;
 		destroy_list(quota_sections, DESTROY_MODE_FREE_VALUES, &num_destroyed);
 		quota_sections = quota_section_buf;
@@ -184,6 +187,7 @@ int main(int argc, char** argv)
 		unsigned long mark_band = 2;
 		int upload_shift = 0;
 		int download_shift = 8;
+
 		while(up_speeds->num_elements > 0)
 		{
 			unsigned long mark = mark_band << upload_shift;
@@ -195,6 +199,7 @@ int main(int argc, char** argv)
 			free(next_up_speed);
 			mark_band++;
 		}
+
 		mark_band = 2;
 		while(down_speeds->num_elements > 0)
 		{
@@ -332,7 +337,7 @@ int main(int argc, char** argv)
 							char next_postfix[20];
 							if(next_postfix_count > 25)
 							{
-								sprintf(next_postfix, "_%c", ('A' + next_postfix_count));
+								sprintf(next_postfix, "_%ld", ('A' + next_postfix_count));
 							}
 							else
 							{
@@ -671,7 +676,6 @@ int main(int argc, char** argv)
 				free(exceeded_down_speed_str);
 			}
 			free(next_quota);
-
 		}
 
 		run_shell_command("iptables -t nat -A quota_redirects -j CONNMARK --set-mark 0x0/0xFF000000 2>/dev/null", 0);
@@ -739,7 +743,7 @@ int main(int argc, char** argv)
 			}
 			if(cron_line_found)
 			{
-				fopen(crontab_file_path, "w");
+				crontab_file = fopen(crontab_file_path, "w");
 				for(line_index=0; line_index < num_lines; line_index++)
 				{
 					if(strcmp(cron_lines[line_index], crontab_line) != 0)
@@ -791,7 +795,6 @@ void restore_backup_for_id(char* id, char* quota_backup_dir, unsigned char is_in
 			{
 				filter_group_from_list(&ip_bw_list, group_strs[group_index]);
 			}
-
 
 			//rebuild the backup data array from the filtered list
 			if(num_ips != ip_bw_list->length)
@@ -872,6 +875,7 @@ list* filter_group_from_list(list** orig_ip_bw_list, char* ip_group_str)
 		destroy_list(*orig_ip_bw_list, DESTROY_MODE_IGNORE_VALUES, &num_destroyed);
 		*orig_ip_bw_list = new_ip_bw_list;
 	}
+
 	free_null_terminated_string_array(split_group);
 	free(dyn_group_str);
 
@@ -1067,5 +1071,6 @@ char* get_option_value_string(struct uci_option* uopt)
 			}
 		}
 	}
+
 	return opt_str;
 }

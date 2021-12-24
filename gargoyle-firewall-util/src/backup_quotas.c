@@ -40,6 +40,7 @@ int main(void)
 	list* quota_sections = get_all_sections_of_type(ctx, "firewall", "quota");
 	system("mkdir -p /usr/data/quotas");
 	unlock_bandwidth_semaphore_on_exit();
+
 	while(quota_sections->length > 0)
 	{
 		char* next_quota = shift_list(quota_sections);
@@ -95,6 +96,7 @@ int main(void)
 					free(type_id);
 					free(defined);
 				}
+
 			}
 			free(backup_id);
 			free(ip);
@@ -111,6 +113,7 @@ int main(void)
 
 list* get_all_sections_of_type(struct uci_context *ctx, char* package, char* section_type)
 {
+
 	struct uci_package *p = NULL;
 	struct uci_element *e = NULL;
 
@@ -213,5 +216,6 @@ char* get_option_value_string(struct uci_option* uopt)
 			}
 		}
 	}
+
 	return opt_str;
 }

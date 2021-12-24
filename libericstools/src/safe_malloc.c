@@ -1,6 +1,6 @@
 /*
  * Copyright © 2008 by Eric Bishop <eric@gargoyle-router.com>
- *
+ * 
  * This work ‘as-is’ we provide.
  * No warranty, express or implied.
  * We’ve done our best,
@@ -21,9 +21,9 @@
  *
  *  Basically, this library contains a bunch of utilities
  *  that I find useful.  I'm sure other libraries exist
- *  that are just as good or better, but I like these tools
+ *  that are just as good or better, but I like these tools 
  *  because I personally wrote them, so I know their quirks.
- *  (i.e. I know where the bodies are buried).  I want to
+ *  (i.e. I know where the bodies are buried).  I want to 
  *  make sure that I can re-use these utilities for whatever
  *  code I may want to write in the future be it
  *  proprietary or open-source, so I've put them under
@@ -62,6 +62,7 @@ char* safe_strdup(const char* str)
 	return new_str;
 }
 
+
 void free_if_not_null(void* p)
 {
 	if(p != NULL)
@@ -69,7 +70,6 @@ void free_if_not_null(void* p)
 		free(p);
 	}
 }
-
 void free_and_set_null(void** p)
 {
 	if(*p != NULL)
