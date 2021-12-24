@@ -38,10 +38,14 @@ jobs:
     - name: Load latest gargoyle
       run: |
         svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/luci-app-qos-gargoyle ./tmp/gargoyle/luci-app-qos-gargoyle
+        #此版的有问题
+        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/qos-gargoyle ./tmp/gargoyle/gargoyle-packages/qos-gargoyle-2
+        #此版的有问题
+        svn co https://github.com/immortalwrt/immortalwrt/tree/openwrt-18.06/package/emortal/qos-gargoyle  ./tmp/gargoyle/gargoyle-packages/qos-gargoyle
         svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/gargoyle-firewall-util ./tmp/gargoyle/gargoyle-packages/gargoyle-firewall-util
         svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/libericstools ./tmp/gargoyle/gargoyle-packages/libericstools
         svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/libiptbwctl ./tmp/gargoyle/gargoyle-packages/libiptbwctl
-        svn co https://github.com/Ameykyl/openwrt18.06/trunk/package/my/gargoyle-packages/qos-gargoyle ./tmp/gargoyle/gargoyle-packages/qos-gargoyle
+        
         
         
         cp -rf ./tmp/gargoyle/luci-app-qos-gargoyle ./
